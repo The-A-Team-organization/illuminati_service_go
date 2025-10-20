@@ -36,7 +36,7 @@ func StartHTTPServer(task func()) {
 		fmt.Fprintln(w, "Task triggered manually")
 	})
 
-	log.Println("HTTP server is runnig on :8080")
+	log.Println("HTTP server is running on :8080")
 	go func() {
 		if err := http.ListenAndServe(":8080", nil); err != nil {
 			log.Fatal("HTTP server error:", err)
