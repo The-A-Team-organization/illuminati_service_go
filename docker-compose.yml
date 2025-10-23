@@ -10,18 +10,20 @@ services:
     # restart: unless-stopped?
     environment:
       # - TZ=Europe/Kyiv
-      - MOCK_URL=http://mockserver:1080/participants
-    depends_on:
-      - mockserver
+      #- MOCK_URL=http://mockserver:1080/participants
+      - MOCK_URL=http://localhost:8000/api/participants
+      - SET_SECRET_URL=http://localhost:8000/set/secret
+    # depends_on:
+    #   - mockserver
 
-  mockserver:
-    image: mockserver/mockserver
-    container_name: mockserver
-    ports:
-      - "1080:1080"
-    volumes:
-      - ./mock/participants.json:/tmp/participants.json
-    environment:
-      - MOCKSERVER_INITIALIZATION_JSON_PATH=/tmp/participants.json
-    # command: >
-    #   -serverPort 1080
+  # mockserver:
+  #   image: mockserver/mockserver
+  #   container_name: mockserver
+  #   ports:
+  #     - "1080:1080"
+  #   volumes:
+  #     - ./mock/expectation.json:/tmp/expectation.json
+  #   environment:
+  #     - MOCKSERVER_INITIALIZATION_JSON_PATH=/tmp/expectation.json
+  #   # command: >
+  #   #   -serverPort 1080
