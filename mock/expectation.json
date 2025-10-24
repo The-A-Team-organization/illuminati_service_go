@@ -2,7 +2,7 @@
   {
     "httpRequest": {
       "method": "POST",
-      "path": "/set/secret",
+      "path": "/set/",
       "body": {
         "type": "JSON",
         "json": {},
