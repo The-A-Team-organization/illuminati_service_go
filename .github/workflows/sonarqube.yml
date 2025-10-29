@@ -1,11 +1,10 @@
 name: sonarqube
 
-on: 
+on:
   workflow_dispatch:
   push:
 
 jobs:
-
   trigger:
     name: Build and analyze
     runs-on: ubuntu-latest
