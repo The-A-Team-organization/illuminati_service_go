@@ -37,12 +37,12 @@ func GetAppParticipants(url string) ([]string, error) {
 	defer resp.Body.Close()
 	
 	var data struct {
-	 	participants []string `json:"participants"`
+	 	Participants []string `json:"participants"`
 	}
 
 	json.NewDecoder(resp.Body).Decode(&data);
 
-	return data.participants, nil
+	return data.Participants, nil
 }
 
 func SendWordEmail(word string, participants []string) error{

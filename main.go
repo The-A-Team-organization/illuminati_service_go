@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+
 	var mutexManager controllers.MutexManager
 	routes.SetupAPI(mutexManager)
 	log.Fatal(http.ListenAndServe(":1080", nil))

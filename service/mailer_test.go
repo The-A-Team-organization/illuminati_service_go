@@ -1,11 +1,12 @@
 package service
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
-
-	"github.com/h2non/gock"
 )
 
 func Test_GetRandomWord(t *testing.T) {
@@ -15,79 +16,22 @@ func Test_GetRandomWord(t *testing.T) {
     }
 }
 
-// func Test_SendEmail(t *testing.T) {
-
-//     emails := []string{"post@pon.com"}
-//     sendTests := []struct {
-//         word string
-//         emails []string
-//     }{
-//         {"lorem", nil},
-//         {"", emails},
-//     }
-    
-// }
-
 func Test_GetAppParticipants(t *testing.T) {
 
-    //jsontest := `"participants": ["test1@gmail.com", "test123@gmail.com"]`
-
-    // httpmock.Activate()
-    // defer httpmock.DeactivateAndReset()
-    
-    // httpmock.RegisterResponder(
-    //     http.MethodGet, 
-    //     "https://example.com",
-    //     func(req *http.Request) (*http.Response, error) {
-    //        resp, err := httpmock.NewJsonResponse(200, httpmock.File("test_body.json"))
-    //        fmt.Print(resp)
-    //        return resp, err
-    //     },
-    // )
-
-    // 
-
-	// json.NewDecoder(value.Body).Decode(&data);
-
-    // fmt.Println()
-    // fmt.Println()
-    // fmt.Println(value.Body)
-    // fmt.Println(data.participants)
-    // fmt.Println()
-    // fmt.Println()
-
-    type data struct {
-	 	Participants []string `json:"participants"`
-	}
-
-    expected := &data{
-        Participants:[]string{"test1@gmail.com", "test123@gmail.com"} ,
+    test :=  func(w http.ResponseWriter, r *http.Request) {
+        type data struct {
+	 	Participants []string `json:"participants"`}
+        var example data 
+        example.Participants = []string{"test1@gmail.com", "test123@gmail.com"}
+        dataSend, _  := json.Marshal(example)
+        fmt.Println(dataSend)
+        w.Header().Set("Content-Type", "application/json")
+        w.Write(dataSend)
+    }  
+    server := httptest.NewServer(http.HandlerFunc(test))
+    defer server.Close()
+    resp, _  := GetAppParticipants(server.URL)
+    if resp == nil {
+        t.Errorf("Expected post@pon.com, post1@pon.com, post2@pon.com, got %s", resp)
     }
-    
-   // var resp data
-
-    // {
-    //     Participants : []s{"test1@gmail.com", "test123@gmail.com"},
-    // }
-
-    gock.New("https://example.com").
-       Get("/").
-       Reply(200).
-       JSON(expected)
-
-    value, _ := GetAppParticipants("https://example.com/")
-
-
-    // fmt.Printf("%s", value.Body)
-
-    // err = json.NewDecoder(value.Body).Decode(&resp)
-    // if err != nil {
-    //         panic(err)
-    // }
-    // fmt.Println()
-    fmt.Println(value)
-    // if data.Participants == nil {
-    //     t.Errorf("Expected post@pon.com, post1@pon.com, post2@pon.com, got %s, error: %s", data.Participants , err)
-    // }
- 
 }
