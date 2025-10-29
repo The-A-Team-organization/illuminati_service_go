@@ -16,7 +16,6 @@ import (
 var (
 	 username = os.Getenv("EMAIL_USERNAME") 
 	 password = os.Getenv("EMAIL_PASSWORD")
-     mockURL  = os.Getenv("MOCK_URL")
 )
 
 func GetRandomWord() string {

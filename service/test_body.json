@@ -1,5 +1,0 @@
-{
-  "statusCode": 200,
-  "participants": ["test1@gmail.com", "test123@gmail.com"],
-  "headers": [{"name": "Content-Type", "values": ["application/json"]}]
-}

@@ -17,7 +17,7 @@ func Test_Compromised(t *testing.T) {
 	}
 	json.NewDecoder(resp.Body).Decode(&payload)
     if payload.Password == "" {
-        t.Errorf("Expected post@pon.com, post1@pon.com, post2@pon.com, got %s", payload.Password)
+        t.Errorf("Expected some hashed password, got %s", payload.Password)
     }
 }
 	

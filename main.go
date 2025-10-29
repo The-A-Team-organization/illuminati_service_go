@@ -1,7 +1,6 @@
 package main
 
 import (
-	"illuminati/go/microservice/controllers"
 	"illuminati/go/microservice/routes"
 	"log"
 	"net/http"
@@ -9,7 +8,6 @@ import (
 
 func main() {
 
-	var mutexManager controllers.MutexManager
-	routes.SetupAPI(mutexManager)
+	routes.SetupAPI()
 	log.Fatal(http.ListenAndServe(":1080", nil))
 }
