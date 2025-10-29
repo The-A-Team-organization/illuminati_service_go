@@ -31,8 +31,7 @@ func GetAppParticipants(url string) ([]string, error) {
 
 	resp, err  := http.Get(url)
 	if err != nil {
-		fmt.Println("SOME TEXT:", err)
-		return nil, err
+		return nil, errors.New("SOME TEXT")
 	}
 
 	defer resp.Body.Close()
