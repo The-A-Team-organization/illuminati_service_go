@@ -6,6 +6,6 @@ import (
 )
 
 func SetupAPI(){
-	http.HandleFunc("/compromised", controllers.Compromised)
+	http.HandleFunc("/new-word", controllers.WordResender)
 }
 

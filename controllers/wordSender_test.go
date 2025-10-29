@@ -9,7 +9,7 @@ import (
 
 func Test_Compromised(t *testing.T) {
 
-    server := httptest.NewServer(http.HandlerFunc(Compromised))
+    server := httptest.NewServer(http.HandlerFunc(WordResender))
     defer server.Close()
     resp, _  := http.Get(server.URL)
 	var payload struct {

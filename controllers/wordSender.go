@@ -8,12 +8,12 @@ import (
 )
 
 
-var mockURL  = os.Getenv("MOCK_URL")
+var participantsURL  = os.Getenv("PARTICIPANTS_URL")
 
-func Compromised(w http.ResponseWriter, r *http.Request) {
+func WordResender(w http.ResponseWriter, r *http.Request) {
 	
 	newWord := service.GetRandomWord()
-	participants, _ := service.GetAppParticipants(mockURL)
+	participants, _ := service.GetAppParticipants(participantsURL)
 	service.SendWordEmail(newWord,participants)
 
 	hashed, err := utils.HashPassword(newWord)
