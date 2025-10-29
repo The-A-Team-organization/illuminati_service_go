@@ -35,3 +35,16 @@ func Test_GetAppParticipants(t *testing.T) {
         t.Errorf("Expected post@pon.com, post1@pon.com, post2@pon.com, got %s", resp)
     }
 }
+
+func Test_SendWordEmail(t *testing.T) {
+
+    err := SendWordEmail("", []string{})
+    if err == nil{
+         t.Errorf("Here should be err")
+    } 
+    err = SendWordEmail("Lorem", []string{})
+    if err != nil{
+         t.Errorf("Here shouldn`t be err")
+    } 
+    
+}
