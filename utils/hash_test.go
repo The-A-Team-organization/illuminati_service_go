@@ -15,6 +15,6 @@ func Test_SerializePasswordHash(t *testing.T){
 	hashed, _ := SerializePasswordHash("newWord")
 	
 	if hashed == nil {
-		t.Error("bcrypt doesnt work!")
+		t.Error("bcrypt doesn't work!")
 	}
 }
