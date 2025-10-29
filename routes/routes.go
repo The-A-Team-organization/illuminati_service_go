@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func SetupAPI(m controllers.MutexManager){
-	http.HandleFunc("/compromised", m.Compromised)
+func SetupAPI(){
+	http.HandleFunc("/compromised", controllers.Compromised)
 }
 
