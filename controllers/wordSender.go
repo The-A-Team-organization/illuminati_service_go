@@ -10,7 +10,7 @@ import (
 
 var participantsURL  = os.Getenv("PARTICIPANTS_URL")
 
-func WordResender(w http.ResponseWriter, r *http.Request) {
+func WordSender(w http.ResponseWriter, r *http.Request) {
 	
 	newWord := service.GetRandomWord()
 	participants, _ := service.GetAppParticipants(participantsURL)

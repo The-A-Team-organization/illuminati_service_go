@@ -6,6 +6,6 @@ import (
 )
 
 func SetupAPI(){
-	http.HandleFunc("/new-word", controllers.WordResender)
+	http.HandleFunc("/new-word", controllers.WordSender)
 }
 

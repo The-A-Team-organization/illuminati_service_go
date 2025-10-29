@@ -7,7 +7,7 @@ func Test_HashPassword(t *testing.T){
 	hashed, _ := HashPassword("newWord")
 	
 	if hashed == "" {
-		t.Error("bcrypt doesnt work!")
+		t.Error("bcrypt doesn`t work!")
 	}
 }
 
