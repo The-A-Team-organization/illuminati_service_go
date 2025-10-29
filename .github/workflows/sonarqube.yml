@@ -23,7 +23,7 @@ jobs:
           time: "1m"
 
   build:
-    #needs: trigger
+    needs: trigger
     name: Build and analyze
     runs-on: ubuntu-latest
 
