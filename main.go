@@ -1,22 +1,13 @@
 package main
 
 import (
-	"service/mailer"
-	"service/scheduler"
+	"illuminati/go/microservice/routes"
+	"log"
+	"net/http"
 )
 
 func main() {
-	
-	
-	//scheduler.StartCron("0 9 * * *", mailer.SendWordEmail)
-
-	//  run every 10 minutes
-	scheduler.StartCron("@every 10m", mailer.SendWordEmail)
-
-	// Start the HTTP server for manual triggering
-
-	scheduler.StartHTTPServer(mailer.SendWordEmail)
-
-	// Keep the main thread alive 
-	select {}
+	routes.SetupAPI()
+	log.Print("Starting a server...")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }

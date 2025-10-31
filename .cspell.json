@@ -1,6 +1,15 @@
 {
   "version": "0.2",
   "language": "en",
-  "words": ["loremipsum", "mailtest", "mockserver", "robfig", "wneessen"],
+  "words": [
+    "gock",
+    "jsontest",
+    "httpmock",
+    "loremipsum",
+    "mailtest",
+    "mockserver",
+    "robfig",
+    "wneessen"
+  ],
   "ignorePaths": ["**/go.mod", "**/go.sum"]
 }
