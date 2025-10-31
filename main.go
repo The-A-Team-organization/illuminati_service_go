@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-
 	routes.SetupAPI()
-	log.Fatal(http.ListenAndServe(":1080", nil))
+	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Println("Server is up!")
 }

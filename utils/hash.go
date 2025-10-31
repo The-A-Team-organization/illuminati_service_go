@@ -13,7 +13,7 @@ func HashPassword(password string) (string, error){
 
 func SerializePasswordHash(password string) ([]byte, error){
 	payload := map[string]string{
-		"password": string(password),
+		"entry_password": string(password),
 	}
 	data, err := json.Marshal(payload)
 	return data, err

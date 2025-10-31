@@ -13,7 +13,7 @@ func Test_Compromised(t *testing.T) {
     defer server.Close()
     resp, _  := http.Get(server.URL)
 	var payload struct {
-	 	Password string `json:"password"`
+	 	Password string `json:"entry_password"`
 	}
 	json.NewDecoder(resp.Body).Decode(&payload)
     if payload.Password == "" {
