@@ -24,7 +24,7 @@ func Test_Compromised(t *testing.T) {
     }
 }
 
-func Test_WhenPartisipanceUrlIsNULL(t *testing.T) {
+func Test_WhenPartisipantUrlIsNULL(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(WordSender))
     defer server.Close()
     resp, _  := http.Get(server.URL)
