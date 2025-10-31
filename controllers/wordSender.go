@@ -3,6 +3,7 @@ package controllers
 import (
 	"illuminati/go/microservice/service"
 	"illuminati/go/microservice/utils"
+	"log"
 	"net/http"
 	"os"
 )
@@ -13,7 +14,15 @@ var participantsURL  = os.Getenv("PARTICIPANTS_URL")
 func WordSender(w http.ResponseWriter, r *http.Request) {
 	
 	newWord := service.GetRandomWord()
-	participants, _ := service.GetAppParticipants(participantsURL)
+	log.Print("participants url : ", participantsURL)
+	participants, err := service.GetAppParticipants(participantsURL)
+	if err != nil {
+		log.Print("Get no participants :", err)
+		w.WriteHeader(http.StatusInternalServerError)
+  		return
+	}
+	log.Print("Got participants :", participants)
+	
 	service.SendWordEmail(newWord,participants)
 
 	hashed, err := utils.HashPassword(newWord)

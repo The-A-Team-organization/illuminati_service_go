@@ -22,6 +22,7 @@ func GetRandomWord() string {
 
 	loremIpsumGenerator := loremipsum.New()
 	Word := loremIpsumGenerator.Word()
+	log.Print("new word : ", Word)
 	return strings.TrimSpace(Word)
 
 }
@@ -30,7 +31,7 @@ func GetAppParticipants(url string) ([]string, error) {
 
 	resp, err  := http.Get(url)
 	if err != nil {
-		return nil, errors.New("SOME TEXT")
+		return nil, err
 	}
 
 	defer resp.Body.Close()
