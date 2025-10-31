@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"illuminati/go/microservice/utils"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 
 	"github.com/XANi/loremipsum"
-	"github.com/wneessen/go-mail"
 )
 
 var (
@@ -45,28 +45,13 @@ func GetAppParticipants(url string) ([]string, error) {
 	return data.Participants, nil
 }
 
-func SendWordEmail(word string, participants []string) error{
+func BuildEntryPasswordEmail(word string, participants []string) error{
 
 	if(word == "") {
 		return errors.New("the word field is blank")
 	}
 
-	client, err := mail.NewClient(
-		"smtp.gmail.com",
-		mail.WithTLSPortPolicy(mail.TLSMandatory),
-		mail.WithSMTPAuth(mail.SMTPAuthAutoDiscover),
-		mail.WithUsername(username),
-		mail.WithPassword(password),
-	)
-	if err != nil {
-		fmt.Println("Failed to create mail client:", err)
-		return err
-	}
-
-	msg := mail.NewMsg()
-	msg.Subject("Word of the Day")
-
-	body := fmt.Sprintf(`Hello,
+	text := fmt.Sprintf(`Hello,
 
 		You're subscribed to our Latin vocabulary service, and today’s Word of the Day is %s.
 
@@ -77,18 +62,10 @@ func SendWordEmail(word string, participants []string) error{
 		`, 
 	word)
 
-	msg.SetBodyString(mail.TypeTextPlain, body)
-
-	for _, email := range participants {
-		msg.From(username)
-		msg.To(email)
-
-		if err := client.DialAndSend(msg); err != nil {
-			fmt.Println("Failed to send mail:", err)
-			return err
-		}
-
-		log.Println("Email sent successfully!")
+	err := utils.SendEmail("Word of the Day", text, participants)
+	if err != nil {
+		log.Fatal("Something went wrong during sending the emails..")
+		return err
 	}
 
 	return nil

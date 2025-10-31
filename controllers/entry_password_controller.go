@@ -9,7 +9,7 @@ import (
 )
 
 
-func WordSender(w http.ResponseWriter, r *http.Request) {
+func GetNewEntryPassword(w http.ResponseWriter, r *http.Request) {
 	participantsURL := os.Getenv("PARTICIPANTS_URL")
 	
 	newWord := service.GetRandomWord()
@@ -22,7 +22,7 @@ func WordSender(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Print("Got participants :", participants)
 	
-	service.SendWordEmail(newWord,participants)
+	service.BuildEntryPasswordEmail(newWord,participants)
 
 	hashed, err := utils.HashPassword(newWord)
 	if err != nil {

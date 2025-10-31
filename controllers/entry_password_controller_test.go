@@ -8,11 +8,11 @@ import (
 	"testing"
 )
 
-func Test_Compromised(t *testing.T) {
+func Test_GetNewEntryPassword(t *testing.T) {
 	test_backend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
 	defer test_backend.Close()
 	os.Setenv("PARTICIPANTS_URL", test_backend.URL)
-    server := httptest.NewServer(http.HandlerFunc(WordSender))
+    server := httptest.NewServer(http.HandlerFunc(GetNewEntryPassword))
     defer server.Close()
     resp, _  := http.Get(server.URL)
 	var payload struct {
@@ -24,8 +24,8 @@ func Test_Compromised(t *testing.T) {
     }
 }
 
-func Test_WhenParticipantUrlIsNULL(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(WordSender))
+func Test_WhenPartisipanceUrlIsNULL(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(GetNewEntryPassword))
     defer server.Close()
     resp, _  := http.Get(server.URL)
 	if resp.StatusCode == http.StatusOK {

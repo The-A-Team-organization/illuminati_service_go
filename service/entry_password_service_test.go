@@ -38,11 +38,11 @@ func Test_GetAppParticipants(t *testing.T) {
 
 func Test_SendWordEmail(t *testing.T) {
 
-    err := SendWordEmail("", []string{})
+    err := BuildEntryPasswordEmail("", []string{})
     if err == nil{
          t.Errorf("Here should be err")
     } 
-    err = SendWordEmail("Lorem", []string{})
+    err = BuildEntryPasswordEmail("Lorem", []string{})
     if err != nil{
          t.Errorf("Here shouldn`t be err")
     } 

@@ -6,6 +6,7 @@ import (
 )
 
 func SetupAPI(){
-	http.HandleFunc("/new-word", controllers.WordSender)
+	http.HandleFunc("/entry_password", controllers.GetNewEntryPassword)
+	http.HandleFunc("/send_letter", controllers.PostLetter)
 }
 
