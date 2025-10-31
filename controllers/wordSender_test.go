@@ -10,6 +10,7 @@ import (
 
 func Test_Compromised(t *testing.T) {
 	test_backend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	defer test_backend.Close()
 	os.Setenv("PARTICIPANTS_URL", test_backend.URL)
     server := httptest.NewServer(http.HandlerFunc(WordSender))
     defer server.Close()
@@ -22,4 +23,13 @@ func Test_Compromised(t *testing.T) {
         t.Errorf("Expected some hashed password, got %s", payload.Password)
     }
 }
+
+func Test_WhenPartisipanceUrlIsNULL(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(WordSender))
+    defer server.Close()
+    resp, _  := http.Get(server.URL)
+	if resp.StatusCode == http.StatusOK {
+        t.Errorf("Expected error here")
+    }
 	
+}

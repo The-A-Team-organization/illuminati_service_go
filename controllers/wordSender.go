@@ -9,10 +9,8 @@ import (
 )
 
 
-
-
 func WordSender(w http.ResponseWriter, r *http.Request) {
-	participantsURL  := os.Getenv("PARTICIPANTS_URL")
+	participantsURL := os.Getenv("PARTICIPANTS_URL")
 	
 	newWord := service.GetRandomWord()
 	log.Print("participants url : ", participantsURL)
