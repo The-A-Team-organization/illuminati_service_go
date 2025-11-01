@@ -33,3 +33,20 @@ func Test_SendLetterEmail(t *testing.T) {
 	err := service.SendLetterEmail(request)
 	assert.NoError(t, err)
 }
+
+
+func Test_SendLetterEmailWhileRequestBodyIsNil(t *testing.T) {
+	var (
+		ctrl            = gomock.NewController(t)
+		mockEmailSender = mock_utils.NewMockEmailSender(gomock.NewController(t))
+		service         = NewLetterService(mockEmailSender)
+	)
+	defer ctrl.Finish()
+
+
+	request, _ := http.NewRequest(http.MethodPost, "", bytes.NewBuffer(nil))
+
+
+	err := service.SendLetterEmail(request)
+	assert.Error(t, err)
+}
