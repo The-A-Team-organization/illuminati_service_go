@@ -53,4 +53,4 @@ docker-compose up --build
 
 Trigger an email manually using the service endpoint (http://localhost:8080/entry_password)
 
-Check your terminal logs to see the email sending process also as respose you should get hashed password
+Check your terminal logs to see the email sending process also as response you should get hashed password
