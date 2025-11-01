@@ -11,7 +11,7 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-func Test_BuildLetterEmail(t *testing.T) {
+func Test_SendLetterEmail(t *testing.T) {
 	var (
 		ctrl            = gomock.NewController(t)
 		mockEmailSender = mock_utils.NewMockEmailSender(gomock.NewController(t))

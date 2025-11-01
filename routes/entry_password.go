@@ -2,7 +2,6 @@ package routes
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"illuminati/go/microservice/utils"
 	"log"
@@ -13,13 +12,31 @@ import (
 	"github.com/XANi/loremipsum"
 )
 
+
+type participants struct {
+	Participants []string `json:"participants"`
+}
+
+
+type entryPasswordService struct {
+	emailSender utils.EmailSender
+    participantsURL string
+}
+
+func NewEntryPasswordService(emailSender utils.EmailSender,  participantsURL string) *entryPasswordService {
+	return &entryPasswordService{
+		emailSender: emailSender,
+		participantsURL : participantsURL,
+	}
+}
+
 var (
-	username    = os.Getenv("EMAIL_USERNAME")
-	password    = os.Getenv("EMAIL_PASSWORD")
-	participantsURL = os.Getenv("PARTICIPANTS_URL")
+	participants_url = os.Getenv("PARTICIPANTS_URL")
+	es = NewEntryPasswordService(utils.SingletonEmailSender, participants_url)
 )
 
-func GetRandomWord() string {
+
+func getRandomWord() string {
 
 	loremIpsumGenerator := loremipsum.New()
 	Word := loremIpsumGenerator.Word()
@@ -28,29 +45,21 @@ func GetRandomWord() string {
 
 }
 
-func GetAppParticipants(url string) ([]string, error) {
+func (es *entryPasswordService)getAppParticipants() ([]string, error) {
 
-	resp, err := http.Get(url)
+	resp, err := http.Get(es.participantsURL)
 	if err != nil {
 		return nil, err
 	}
-
 	defer resp.Body.Close()
-
-	var data struct {
-		Participants []string `json:"participants"`
-	}
-
+	
+	var data participants
 	json.NewDecoder(resp.Body).Decode(&data)
 
 	return data.Participants, nil
 }
 
-func SendEntryPasswordEmail(word string, participants []string) error {
-
-	if word == "" {
-		return errors.New("the word field is blank")
-	}
+func (es *entryPasswordService)sendEntryPasswordEmail(word string, participants []string) error {
 
 	text := fmt.Sprintf(`Hello,
 
@@ -63,7 +72,7 @@ func SendEntryPasswordEmail(word string, participants []string) error {
 		`,
 		word)
 
-	err := utils.SingletonEmailSender.SendEmail("Word of the Day", text, participants)
+	err := es.emailSender.SendEmail("Word of the Day", text, participants)
 	if err != nil {
 		log.Fatal("Something went wrong during sending the emails..")
 		return err
@@ -72,22 +81,23 @@ func SendEntryPasswordEmail(word string, participants []string) error {
 	return nil
 }
 
-func GetNewEntryPassword(w http.ResponseWriter, r *http.Request) {
-	
-	
-	newWord := GetRandomWord()
-	log.Print("participants url : ", participantsURL)
-	participants, err := GetAppParticipants(participantsURL)
+func getNewEntryPassword(w http.ResponseWriter, r *http.Request) {
+
+	word := getRandomWord()
+	log.Print("participants url : ", es.participantsURL)
+	participants, err := es.getAppParticipants()
 	if err != nil {
-		log.Print("Get no participants :", err)
-		w.WriteHeader(http.StatusInternalServerError)
-  		return
+  		log.Fatal("Get no participants :", err)
 	}
 	log.Print("Got participants :", participants)
-	
-	SendEntryPasswordEmail(newWord,participants)
 
-	hashed, err := utils.HashPassword(newWord)
+	if word == "" {
+		log.Fatal("the word field is blank")
+	}
+
+	err = es.sendEntryPasswordEmail(word, participants)
+
+	hashed, err := utils.HashPassword(word)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
   		return

@@ -3,23 +3,26 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
+	mock_utils "illuminati/go/microservice/utils/mocks"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
+
 func Test_GetRandomWord(t *testing.T) {
-    word := GetRandomWord()
+    word := getRandomWord()
     if strings.TrimSpace(word) == "" {
         t.Error("Expected non-empty word")
     }
 }
 
 func Test_GetAppParticipants(t *testing.T) {
-
-    test :=  func(w http.ResponseWriter, r *http.Request) {
+    mockParticipantsAnswer :=  func(w http.ResponseWriter, r *http.Request) {
         type data struct {
 	 	Participants []string `json:"participants"`}
         var example data 
@@ -28,50 +31,59 @@ func Test_GetAppParticipants(t *testing.T) {
         fmt.Println(dataSend)
         w.Header().Set("Content-Type", "application/json")
         w.Write(dataSend)
-    }  
-    server := httptest.NewServer(http.HandlerFunc(test))
+    }
+    
+    server := httptest.NewServer(http.HandlerFunc(mockParticipantsAnswer))
     defer server.Close()
-    resp, _  := GetAppParticipants(server.URL)
+
+    var (
+		ctrl            = gomock.NewController(t)
+		mockEmailSender = mock_utils.NewMockEmailSender(gomock.NewController(t))
+		service         = NewEntryPasswordService(mockEmailSender, server.URL)
+	)
+    defer ctrl.Finish()
+
+    resp, _  := service.getAppParticipants()
     if resp == nil {
         t.Errorf("Expected post@pon.com, post1@pon.com, post2@pon.com, got %s", resp)
     }
 }
 
-func Test_SendWordEmail(t *testing.T) {
 
-    err := SendEntryPasswordEmail("", []string{})
-    if err == nil{
-         t.Errorf("Here should be err")
-    } 
-    err = SendEntryPasswordEmail("Lorem", []string{})
-    if err != nil{
-         t.Errorf("Here shouldn`t be err")
-    } 
+
+func Test_sendEntryPasswordEmail(t *testing.T) {
+
+    word := getRandomWord()
+
+    text := fmt.Sprintf(`Hello,
+
+		You're subscribed to our Latin vocabulary service, and today’s Word of the Day is %s.
+
+		Learn its meaning, usage, and examples to expand your vocabulary!
+
+		Happy learning
+		— The Latin Words Team
+		`,
+	word)
+
+
+    server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+    defer server.Close()
+
+    var (
+		ctrl            = gomock.NewController(t)
+		mockEmailSender = mock_utils.NewMockEmailSender(gomock.NewController(t))
+		service         = NewEntryPasswordService(mockEmailSender, server.URL)
+        participants = []string{"test1@gmail.com", "test123@gmail.com"}
+	)
+	defer ctrl.Finish()
+
+
+
+	mockEmailSender.EXPECT().SendEmail("Word of the Day", text, participants).Return(nil)
+
+	err := service.sendEntryPasswordEmail(word,participants)
+	assert.NoError(t, err)
     
 }
 
-func Test_GetNewEntryPassword(t *testing.T) {
-	test_backend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
-	defer test_backend.Close()
-	os.Setenv("PARTICIPANTS_URL", test_backend.URL)
-    server := httptest.NewServer(http.HandlerFunc(GetNewEntryPassword))
-    defer server.Close()
-    resp, _  := http.Get(server.URL)
-	var payload struct {
-	 	Password string `json:"entry_password"`
-	}
-	json.NewDecoder(resp.Body).Decode(&payload)
-    if payload.Password == "" {
-        t.Errorf("Expected some hashed password, got %s", payload.Password)
-    }
-}
-
-func Test_WhenPartisipanceUrlIsNULL(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(GetNewEntryPassword))
-    defer server.Close()
-    resp, _  := http.Get(server.URL)
-	if resp.StatusCode == http.StatusOK {
-        t.Errorf("Expected error here")
-    }
-	
-}

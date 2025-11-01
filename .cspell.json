@@ -2,13 +2,16 @@
   "version": "0.2",
   "language": "en",
   "words": [
-    "gock",
+    "gomock",
+    "isgomock",
     "jsontest",
     "httpmock",
     "loremipsum",
     "mailtest",
+    "mockgen",
     "mockserver",
     "robfig",
+    "stretchr",
     "wneessen"
   ],
   "ignorePaths": ["**/go.mod", "**/go.sum"]
