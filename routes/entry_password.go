@@ -81,7 +81,7 @@ func (es *entryPasswordService)sendEntryPasswordEmail(word string, participants 
 	return nil
 }
 
-func getNewEntryPassword(w http.ResponseWriter, r *http.Request) {
+func (es *entryPasswordService)getNewEntryPassword(w http.ResponseWriter, r *http.Request) {
 
 	word := getRandomWord()
 	log.Print("participants url : ", es.participantsURL)
@@ -109,5 +109,6 @@ func getNewEntryPassword(w http.ResponseWriter, r *http.Request) {
   		return
 	}
 
+	w.WriteHeader(http.StatusOK)
 	w.Write(data)
 }

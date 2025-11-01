@@ -87,3 +87,56 @@ func Test_sendEntryPasswordEmail(t *testing.T) {
     
 }
 
+
+func Test_getNewEntryPassword(t *testing.T) {
+
+    mockParticipantsAnswer :=  func(w http.ResponseWriter, r *http.Request) {
+        type data struct {
+	 	Participants []string `json:"participants"`}
+        var example data 
+        example.Participants = []string{"test1@gmail.com", "test123@gmail.com"}
+        dataSend, _  := json.Marshal(example)
+        fmt.Println(dataSend)
+        w.Header().Set("Content-Type", "application/json")
+        w.Write(dataSend)
+    }
+    
+    back_server := httptest.NewServer(http.HandlerFunc(mockParticipantsAnswer))
+
+    word := getRandomWord()
+
+    text := fmt.Sprintf(`Hello,
+
+		You're subscribed to our Latin vocabulary service, and today’s Word of the Day is %s.
+
+		Learn its meaning, usage, and examples to expand your vocabulary!
+
+		Happy learning
+		— The Latin Words Team
+		`,
+	word)
+
+  
+
+    var (
+		ctrl            = gomock.NewController(t)
+		mockEmailSender = mock_utils.NewMockEmailSender(gomock.NewController(t))
+		service         = NewEntryPasswordService(mockEmailSender, back_server.URL)
+        participants = []string{"test1@gmail.com", "test123@gmail.com"}
+	)
+	defer ctrl.Finish()
+
+
+
+	mockEmailSender.EXPECT().SendEmail("Word of the Day", text, participants).Return(nil)
+    
+
+    server := httptest.NewServer(http.HandlerFunc(service.getNewEntryPassword))
+    defer server.Close()
+
+    response, _ := http.Get(server.URL)
+
+	assert.Equal(t, response.Status, "200 OK")
+    
+}
+
