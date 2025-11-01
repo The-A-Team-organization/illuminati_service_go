@@ -2,7 +2,7 @@
 
 # E-mail Service with scheduler and manual trigger
 
-This project sends emails using Gmail SMTP and includes a MockServer setup for local testing.
+This project sends emails using Gmail SMTP.
 
 ---
 
