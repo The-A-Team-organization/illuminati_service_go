@@ -7,6 +7,7 @@ RUN go mod init illuminati/go/microservice \
     && go get github.com/wneessen/go-mail \
     && go get github.com/XANi/loremipsum \
     && go get golang.org/x/crypto/bcrypt \
+    && go get golang.org/x/sync/errgroup \
     && go mod tidy
 
 

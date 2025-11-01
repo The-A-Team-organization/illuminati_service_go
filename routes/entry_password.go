@@ -32,7 +32,7 @@ func NewEntryPasswordService(emailSender utils.EmailSender,  participantsURL str
 
 var (
 	participants_url = os.Getenv("PARTICIPANTS_URL")
-	es = NewEntryPasswordService(utils.SingletonEmailSender, participants_url)
+	es = NewEntryPasswordService(utils.GetInstance(), participants_url)
 )
 
 
@@ -74,7 +74,7 @@ func (es *entryPasswordService)sendEntryPasswordEmail(word string, participants 
 
 	err := es.emailSender.SendEmail("Word of the Day", text, participants)
 	if err != nil {
-		log.Fatal("Something went wrong during sending the emails..")
+		log.Print("Something went wrong while sending emails with new entry passwords!", err)
 		return err
 	}
 
@@ -82,20 +82,7 @@ func (es *entryPasswordService)sendEntryPasswordEmail(word string, participants 
 }
 
 func (es *entryPasswordService)getNewEntryPassword(w http.ResponseWriter, r *http.Request) {
-
 	word := getRandomWord()
-	log.Print("participants url : ", es.participantsURL)
-	participants, err := es.getAppParticipants()
-	if err != nil {
-  		log.Fatal("Get no participants :", err)
-	}
-	log.Print("Got participants :", participants)
-
-	if word == "" {
-		log.Fatal("the word field is blank")
-	}
-
-	err = es.sendEntryPasswordEmail(word, participants)
 
 	hashed, err := utils.HashPassword(word)
 	if err != nil {
@@ -109,6 +96,22 @@ func (es *entryPasswordService)getNewEntryPassword(w http.ResponseWriter, r *htt
   		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write(data)
+	_, err = w.Write(data)
+	if err != nil {
+		log.Println("can`t send back response error :", err)		
+	}
+
+	log.Print("participants url : ", es.participantsURL)
+	participants, err := es.getAppParticipants()
+	if err != nil {
+  		log.Print("Get no participants :", err)
+	}
+	log.Print("Got participants :", participants)
+
+	if word == "" {
+		log.Print("the word field is blank")
+	}
+
+	go es.sendEntryPasswordEmail(word, participants) 
+
 }

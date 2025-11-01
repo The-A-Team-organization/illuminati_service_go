@@ -2,10 +2,11 @@
   "version": "0.2",
   "language": "en",
   "words": [
+    "errgroup",
     "gomock",
+    "httpmock",
     "isgomock",
     "jsontest",
-    "httpmock",
     "loremipsum",
     "mailtest",
     "mockgen",

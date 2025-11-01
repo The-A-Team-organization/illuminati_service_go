@@ -75,11 +75,11 @@ func Test_PostLetter(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(service.PostLetter))
 	defer server.Close()
 
-	responce, _ := http.Post(server.URL, "application/json" ,bytes.NewBuffer(jsonLetter))
+	response, _ := http.Post(server.URL, "application/json" ,bytes.NewBuffer(jsonLetter))
 
 
 
-	assert.Equal(t, responce.Status, "202 Accepted")
+	assert.Equal(t, response.Status, "202 Accepted")
 
 }
 
@@ -100,15 +100,15 @@ func Test_PostLetterWhileErrIsNotNil(t *testing.T) {
 
 	jsonLetter, _ := json.Marshal(letter)
 
-	mockEmailSender.EXPECT().SendEmail(letter.Topic, letter.Text, letter.TargetEmails).Return(errors.New("recivers cant`t be null"))
+	mockEmailSender.EXPECT().SendEmail(letter.Topic, letter.Text, letter.TargetEmails).Return(errors.New("receivers cant`t be null"))
 
 	server := httptest.NewServer(http.HandlerFunc(service.PostLetter))
 	defer server.Close()
 
-	responce, _ := http.Post(server.URL, "application/json" ,bytes.NewBuffer(jsonLetter))
+	response, _ := http.Post(server.URL, "application/json" ,bytes.NewBuffer(jsonLetter))
 
 
 
-	assert.NotEqual(t, responce.Status, "202 Accepted")
+	assert.NotEqual(t, response.Status, "202 Accepted")
 
 }

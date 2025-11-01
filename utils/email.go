@@ -35,13 +35,13 @@ func init() {
 		mail.WithPassword(email_password),
 	)
 	if err != nil{
-		log.Fatal("Cant create new SMTP clent :", err)
+		log.Fatal("Cant create new SMTP client :", err)
 	}
 	singletonEmailSender = &emailSender{
 		email_username, 
 		client,
 	}
-	log.Print("Initializated SMTP client!!!")
+	log.Print("Initialized SMTP client!!!")
 }
 
 func GetInstance() *emailSender {

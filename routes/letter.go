@@ -5,6 +5,8 @@ import (
 	"illuminati/go/microservice/utils"
 	"log"
 	"net/http"
+
+	"golang.org/x/sync/errgroup"
 )
 
 type LetterService struct {
@@ -18,7 +20,7 @@ func NewLetterService(emailSender utils.EmailSender) *LetterService {
 }
 
 var(
-	ls = NewLetterService(utils.SingletonEmailSender)
+	ls = NewLetterService(utils.GetInstance())
 )
 
 type Letter struct {
@@ -28,6 +30,7 @@ type Letter struct {
 }
 
 func (ls *LetterService) SendLetterEmail(request *http.Request) error {
+	var g errgroup.Group
 	var letter Letter
 	err := json.NewDecoder(request.Body).Decode(&letter)
 	if err != nil {
@@ -35,8 +38,13 @@ func (ls *LetterService) SendLetterEmail(request *http.Request) error {
 		return err
 	}
 
-	err = ls.emailSender.SendEmail(letter.Topic, letter.Text, letter.TargetEmails)
-	if err != nil {
+    g.Go(
+		func() error {
+		err = ls.emailSender.SendEmail(letter.Topic, letter.Text, letter.TargetEmails)
+		return err
+		},
+	)
+	if err := g.Wait(); err != nil {
 		log.Println("Something went wrong while sending the emails...")
 		return err
 	}
