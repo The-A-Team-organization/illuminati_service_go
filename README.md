@@ -39,19 +39,7 @@ cp .env.example .env
 
 ---
 
-### 4. Create MockServer Expectations
-
-Change directory to `mock` in your project.  
-Copy the example file and fill in your own data:
-
-```bash
-cd mock
-cp expectation.json.example expectation.json
-```
-
----
-
-### 5. Run Docker Compose Configuration
+### 4. Run Docker Compose Configuration
 
 This configuration builds and runs:
 The Go email service container.
@@ -61,7 +49,7 @@ The MockServer container for testing.
 docker-compose up --build
 ```
 
-### 6. Verify Everything is Running
+### 5. Verify Everything is Running
 
 Open (http://127.0.0.1:1080/mockserver/dashboard) to view the MockServer dashboard
 
