@@ -2,7 +2,7 @@ name: sonarqube
 
 on:
   workflow_dispatch:
-  push:
+  pull_request:
 
 jobs:
   trigger:
@@ -56,7 +56,7 @@ jobs:
             -Dsonar.projectKey=illuminati_service_go
             -Dsonar.sources=.
             -Dsonar.test.inclusions=**/*_test.go
-            -Dsonar.exclusions=./**/vendor/**,./**/testdata/*,jenkinsfile,.cspell.json,**/routes.go
+            -Dsonar.exclusions=jenkinsfile,.cspell.json,*/routes.go,*/mocks/**
             -Dsonar.coverage.exclusions=./**/*_test.go,main.go
             -Dsonar.go.coverage.reportPaths=coverage.out
         env:

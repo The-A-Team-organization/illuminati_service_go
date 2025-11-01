@@ -6,8 +6,11 @@ import (
 	"net/http"
 )
 
+
 func main() {
 	routes.SetupAPI()
 	log.Print("Starting a server...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
+
+

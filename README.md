@@ -2,7 +2,7 @@
 
 # E-mail Service with scheduler and manual trigger
 
-This project sends emails using Gmail SMTP and includes a MockServer setup for local testing.
+This project sends emails using Gmail SMTP.
 
 ---
 
@@ -39,19 +39,7 @@ cp .env.example .env
 
 ---
 
-### 4. Create MockServer Expectations
-
-Change directory to `mock` in your project.  
-Copy the example file and fill in your own data:
-
-```bash
-cd mock
-cp expectation.json.example expectation.json
-```
-
----
-
-### 5. Run Docker Compose Configuration
+### 4. Run Docker Compose Configuration
 
 This configuration builds and runs:
 The Go email service container.
@@ -61,10 +49,8 @@ The MockServer container for testing.
 docker-compose up --build
 ```
 
-### 6. Verify Everything is Running
+### 5. Verify Everything is Running
 
-Open (http://127.0.0.1:1080/mockserver/dashboard) to view the MockServer dashboard
+Trigger an email manually using the service endpoint (http://localhost:8080/entry_password)
 
-Trigger an email manually using the service endpoint (http://localhost:8080/trigger), or wait for the scheduler to send automatically
-
-Check your terminal logs to see the email sending process
+Check your terminal logs to see the email sending process also as response you should get hashed password

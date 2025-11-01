@@ -1,11 +1,11 @@
 package routes
 
 import (
-	"illuminati/go/microservice/controllers"
 	"net/http"
 )
 
 func SetupAPI(){
-	http.HandleFunc("/new-word", controllers.WordSender)
+	http.HandleFunc("/entry_password", es.getNewEntryPassword)
+	http.HandleFunc("/send_letter", ls.PostLetter)
 }
 

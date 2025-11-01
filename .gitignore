@@ -6,3 +6,5 @@ mock/expectation.json
 go.sum
 go.mod
 coverage.out
+**/.vscode/*
+**/.idea/*
