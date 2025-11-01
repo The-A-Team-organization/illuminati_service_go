@@ -48,8 +48,9 @@ func (ls *LetterService)PostLetter(w http.ResponseWriter, r *http.Request) {
 
 	err := ls.SendLetterEmail(r)
 	if err != nil {
-		log.Fatal("Error :", err)
+		log.Print("Error :", err)
 		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	w.WriteHeader(http.StatusAccepted)

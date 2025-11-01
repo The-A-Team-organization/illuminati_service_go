@@ -3,6 +3,7 @@ package routes
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	mock_utils "illuminati/go/microservice/utils/mocks"
 	"net/http"
 	"net/http/httptest"
@@ -52,7 +53,7 @@ func Test_SendLetterEmailWhileRequestBodyIsNil(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func Test_PostLetterWhilelsIsNil(t *testing.T) {
+func Test_PostLetter(t *testing.T) {
 
 	
 	var (
@@ -79,5 +80,35 @@ func Test_PostLetterWhilelsIsNil(t *testing.T) {
 
 
 	assert.Equal(t, responce.Status, "202 Accepted")
+
+}
+
+func Test_PostLetterWhileErrIsNotNil(t *testing.T) {
+
+	
+	var (
+		ctrl            = gomock.NewController(t)
+		mockEmailSender = mock_utils.NewMockEmailSender(gomock.NewController(t))
+		service         = NewLetterService(mockEmailSender)
+		letter          = Letter{
+			Topic:        "New Letter",
+			Text:         "Here is new letter",
+			TargetEmails: []string{},
+		}
+	)
+	defer ctrl.Finish()
+
+	jsonLetter, _ := json.Marshal(letter)
+
+	mockEmailSender.EXPECT().SendEmail(letter.Topic, letter.Text, letter.TargetEmails).Return(errors.New("recivers cant`t be null"))
+
+	server := httptest.NewServer(http.HandlerFunc(service.PostLetter))
+	defer server.Close()
+
+	responce, _ := http.Post(server.URL, "application/json" ,bytes.NewBuffer(jsonLetter))
+
+
+
+	assert.NotEqual(t, responce.Status, "202 Accepted")
 
 }
