@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 
 	"github.com/wneessen/go-mail"
 )
@@ -17,32 +18,41 @@ type emailSender struct {
 	client *mail.Client
 }
 
-func NewEmailSender(username string, client *mail.Client) EmailSender {	
-	return &emailSender{
-		username: username,
-		client: client,
-	}
-}
-
-
 var (
-	email_username    = os.Getenv("EMAIL_USERNAME")
-	email_password    = os.Getenv("EMAIL_PASSWORD")
-	email_host        = "smtp.gmail.com"
-	client, err = mail.NewClient(
+	email_username       = os.Getenv("EMAIL_USERNAME")
+	email_password       = os.Getenv("EMAIL_PASSWORD")
+	email_host           = "smtp.gmail.com"
+	singletonEmailSender *emailSender
+	lock = &sync.Mutex{}
+)
+
+func init() {
+	client, err := mail.NewClient(
 		email_host,
 		mail.WithTLSPortPolicy(mail.TLSMandatory),
 		mail.WithSMTPAuth(mail.SMTPAuthAutoDiscover),
 		mail.WithUsername(email_username),
 		mail.WithPassword(email_password),
 	)
-	SingletonEmailSender = NewEmailSender(email_username, client) 
-)
+	if err != nil{
+		log.Fatal("Cant create new SMTP clent :", err)
+	}
+	singletonEmailSender = &emailSender{
+		email_username, 
+		client,
+	}
+	log.Print("Initializated SMTP client!!!")
+}
 
+func GetInstance() *emailSender {
+	return singletonEmailSender
+}
 
 
 func (es *emailSender) SendEmail(topic, text string, targetEmails []string) error {
 
+	lock.Lock()
+	defer lock.Unlock()
 	msg := mail.NewMsg()
 
 	msg.Subject(topic)
@@ -54,12 +64,12 @@ func (es *emailSender) SendEmail(topic, text string, targetEmails []string) erro
 		msg.To(email)
 
 		if err := es.client.DialAndSend(msg); err != nil {
-			fmt.Println("Failed to send mail:", err)
+			fmt.Print("Failed to send mail:", err)
 			return err
 		}
 
-		log.Println("Email sent successfully!")
 	}
+	log.Print("Emails were sent successfully!")
 
 	return nil
 }
